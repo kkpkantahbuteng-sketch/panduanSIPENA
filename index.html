@@ -1,1 +1,1401 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Buku Saku SIPENA - Kantor Pertanahan Kabupaten Buton Tengah</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --bg: #f0f4fc;
+        }
+        
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        /* ============================================
+           SIDEBAR (Mirip Aplikasi SIPENA)
+           ============================================ */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .sidebar-header .logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .sidebar-header .logo img {
+            width: 55px;
+            height: auto;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+        
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0 12px;
+        }
+        
+        .sidebar-menu li {
+            margin: 4px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li.active {
+            background: rgba(67, 97, 238, 0.12);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.1);
+        }
+        
+        .sidebar-menu li.active a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .sidebar-menu a:hover {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+        
+        .sidebar-menu i {
+            width: 28px;
+            font-size: 18px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-footer .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #f72585, #b5179e);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-footer .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.3);
+        }
+        
+        .sidebar-footer .btn-back i {
+            font-size: 16px;
+        }
+        
+        /* ============================================
+           MOBILE TOGGLE
+           ============================================ */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 200;
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+        
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px 30px 40px 30px;
+            min-height: 100vh;
+            width: calc(100% - 260px);
+        }
+        
+        /* ============================================
+           STICKY HEADER (Menu Selalu di Atas)
+           ============================================ */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg);
+            padding: 15px 0 10px 0;
+            margin: 0 -30px 20px -30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        
+        .sticky-header .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .sticky-header h1 {
+            font-size: 24px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sticky-header h1 i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .sticky-header .datetime {
+            background: white;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sticky-header .datetime i {
+            font-size: 16px;
+        }
+        
+        /* Navigation Tabs (Sticky) */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding: 4px 0 10px 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(67,97,238,0.3) transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: rgba(67,97,238,0.3);
+            border-radius: 10px;
+        }
+        
+        .nav-tabs a {
+            flex: 0 0 auto;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray);
+            white-space: nowrap;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .nav-tabs a:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-tabs a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(67,97,238,0.3);
+        }
+        
+        /* ============================================
+           CONTENT CARDS
+           ============================================ */
+        .content-area {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-left: 5px solid var(--primary);
+            scroll-margin-top: 120px;
+        }
+        
+        .card h3 {
+            color: var(--dark);
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h3 .badge-time {
+            background: var(--bg);
+            color: var(--primary);
+            font-size: 11px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+        
+        .card ul, .card ol {
+            padding-left: 20px;
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .card li {
+            margin-bottom: 4px;
+        }
+        
+        .card p {
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 6px 0;
+        }
+        
+        .card table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        
+        .card table th {
+            background: var(--primary);
+            color: white;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        .card table td, .card table th {
+            border: 1px solid #e2e8f0;
+            padding: 7px 10px;
+        }
+        
+        .card table tr:nth-child(even) {
+            background: #f8faff;
+        }
+        
+        .highlight {
+            background: #fff9e6;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border-left: 4px solid #f5b342;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        
+        .highlight strong {
+            color: var(--dark);
+        }
+        
+        .code-box {
+            background: #0b2545;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            margin: 8px 0;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-box-small {
+            background: #f0f4fc;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 6px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 5px solid #f72585;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #991b1b;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-left: 5px solid #10b981;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #065f46;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-left: 5px solid #3b82f6;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #1e40af;
+        }
+        
+        /* Cover */
+        .cover-card {
+            background: linear-gradient(135deg, #0b2545 0%, #1a3c6e 100%);
+            color: white;
+            padding: 30px 25px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        
+        .cover-card .logo {
+            font-size: 14px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .cover-card h1 {
+            font-size: 32px;
+            margin: 18px 0 6px;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover-card h2 {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.95;
+            background: rgba(255,255,255,0.12);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 30px;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover-card .badge {
+            background: #f5b342;
+            color: #0b2545;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover-card .tahun {
+            margin-top: 16px;
+            font-size: 12px;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding: 20px 0 10px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 10px;
+        }
+        
+        /* Scroll to top */
+        .btn-scroll-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(67,97,238,0.3);
+            transition: all 0.3s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .btn-scroll-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .btn-scroll-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(67,97,238,0.4);
+        }
+        
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar-header h2,
+            .sidebar-header p,
+            .sidebar-menu span,
+            .sidebar-footer .btn-back span {
+                display: none;
+            }
+            
+            .sidebar-header .logo img {
+                width: 40px;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 14px;
+            }
+            
+            .sidebar-menu i {
+                margin: 0;
+                font-size: 20px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 15px 20px 30px 20px;
+                width: calc(100% - 70px);
+            }
+            
+            .sticky-header {
+                margin: 0 -20px 15px -20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-header h2,
+            .sidebar-header p,
+            .sidebar-menu span,
+            .sidebar-footer .btn-back span {
+                display: block;
+            }
+            
+            .sidebar-menu a {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 12px;
+                font-size: 18px;
+            }
+            
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-overlay.active {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 65px 16px 30px 16px;
+                width: 100%;
+            }
+            
+            .sticky-header {
+                margin: -65px -16px 15px -16px;
+                padding: 65px 16px 10px 16px;
+                background: var(--bg);
+            }
+            
+            .sticky-header h1 {
+                font-size: 18px;
+            }
+            
+            .sticky-header .datetime {
+                font-size: 12px;
+                padding: 5px 12px;
+            }
+            
+            .cover-card h1 {
+                font-size: 22px;
+            }
+            
+            .cover-card h2 {
+                font-size: 15px;
+            }
+            
+            .card {
+                padding: 14px 16px;
+            }
+            
+            .card table {
+                font-size: 11px;
+            }
+            
+            .card table th,
+            .card table td {
+                padding: 5px 6px;
+            }
+            
+            .nav-tabs a {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cover-card h1 {
+                font-size: 18px;
+            }
+            
+            .cover-card h2 {
+                font-size: 13px;
+                padding: 4px 14px;
+            }
+            
+            .sticky-header h1 {
+                font-size: 16px;
+            }
+            
+            .sticky-header .datetime {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+            
+            .card h3 {
+                font-size: 15px;
+            }
+            
+            .code-box {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
 
+<!-- ============================================
+     MOBILE MENU TOGGLE
+     ============================================ -->
+<button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ============================================
+     SIDEBAR
+     ============================================ -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/kkpkantahbuteng-sketch/sipena/refs/heads/main/pertanahan2.png" alt="Logo ATR/BPN">
+        </div>
+        <h2>SIPENA</h2>
+        <p>Kantor Pertanahan Kabupaten Buton Tengah</p>
+    </div>
+    
+    <nav class="sidebar-menu">
+        <ul>
+            <li class="active" id="menuHome">
+                <a onclick="showPage('home')">
+                    <i class="fas fa-home"></i>
+                    <span>Beranda</span>
+                </a>
+            </li>
+            <li id="menuLogin">
+                <a onclick="showPage('login')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            </li>
+            <li id="menuSuratKeluar">
+                <a onclick="showPage('surat-keluar')">
+                    <i class="fas fa-envelope"></i>
+                    <span>Surat Keluar</span>
+                </a>
+            </li>
+            <li id="menuSuratTugas">
+                <a onclick="showPage('surat-tugas')">
+                    <i class="fas fa-tasks"></i>
+                    <span>Surat Tugas</span>
+                </a>
+            </li>
+            <li id="menuBeritaAcara">
+                <a onclick="showPage('berita-acara')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Berita Acara</span>
+                </a>
+            </li>
+            <li id="menuSK">
+                <a onclick="showPage('sk')">
+                    <i class="fas fa-file-signature"></i>
+                    <span>SK</span>
+                </a>
+            </li>
+            <li id="menuAdmin">
+                <a onclick="showPage('admin')">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin Panel</span>
+                </a>
+            </li>
+            <li id="menuLaporan">
+                <a onclick="showPage('laporan')">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+            </li>
+            <li id="menuTroubleshoot">
+                <a onclick="showPage('troubleshoot')">
+                    <i class="fas fa-wrench"></i>
+                    <span>Troubleshoot</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+        <button class="btn-back" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <i class="fas fa-arrow-up"></i>
+            <span>Ke Atas</span>
+        </button>
+    </div>
+</div>
+
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<div class="main-content" id="mainContent">
+    
+    <!-- STICKY HEADER -->
+    <div class="sticky-header">
+        <div class="top-row">
+            <h1 id="pageTitle">
+                <i class="fas fa-book-open"></i> Buku Saku SIPENA
+            </h1>
+            <div class="datetime">
+                <i class="far fa-clock"></i>
+                <span id="datetimeDisplay"></span>
+            </div>
+        </div>
+        <div class="nav-tabs" id="navTabs">
+            <a href="#home" class="active" onclick="showPage('home')">🏠 Beranda</a>
+            <a href="#login" onclick="showPage('login')">🔐 Login</a>
+            <a href="#surat-keluar" onclick="showPage('surat-keluar')">📧 Surat Keluar</a>
+            <a href="#surat-tugas" onclick="showPage('surat-tugas')">📋 Surat Tugas</a>
+            <a href="#berita-acara" onclick="showPage('berita-acara')">📄 BA</a>
+            <a href="#sk" onclick="showPage('sk')">📜 SK</a>
+            <a href="#admin" onclick="showPage('admin')">🛡️ Admin</a>
+            <a href="#laporan" onclick="showPage('laporan')">📊 Laporan</a>
+            <a href="#troubleshoot" onclick="showPage('troubleshoot')">🛠️ Troubleshoot</a>
+        </div>
+    </div>
+    
+    <!-- CONTENT AREA -->
+    <div class="content-area" id="contentArea">
+        <!-- Content will be dynamically loaded -->
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="footer">
+        © 2026 Kantor Pertanahan Kabupaten Buton Tengah &bull; Buku Saku Digital SIPENA v2.0
+    </div>
+</div>
+
+<!-- ============================================
+     SCROLL TO TOP BUTTON
+     ============================================ -->
+<button class="btn-scroll-top" id="btnScrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+    // ============================================
+    // DATE/TIME
+    // ============================================
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZone: 'Asia/Makassar'
+        };
+        document.getElementById('datetimeDisplay').textContent = now.toLocaleDateString('id-ID', options);
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // ============================================
+    // SIDEBAR TOGGLE
+    // ============================================
+    let isMobile = window.innerWidth <= 768;
+    
+    function checkMobile() {
+        isMobile = window.innerWidth <= 768;
+        if (!isMobile) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('mobileOverlay').classList.remove('active');
+        }
+    }
+    
+    window.addEventListener('resize', checkMobile);
+    
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+    
+    // ============================================
+    // SCROLL TO TOP BUTTON
+    // ============================================
+    window.addEventListener('scroll', function() {
+        const btn = document.getElementById('btnScrollTop');
+        if (window.scrollY > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+    
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    function showPage(page) {
+        // Update active menu
+        document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+        const menuMap = {
+            'home': 'menuHome',
+            'login': 'menuLogin',
+            'surat-keluar': 'menuSuratKeluar',
+            'surat-tugas': 'menuSuratTugas',
+            'berita-acara': 'menuBeritaAcara',
+            'sk': 'menuSK',
+            'admin': 'menuAdmin',
+            'laporan': 'menuLaporan',
+            'troubleshoot': 'menuTroubleshoot'
+        };
+        if (menuMap[page]) {
+            document.getElementById(menuMap[page]).classList.add('active');
+        }
+        
+        // Update nav tabs
+        document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs a').forEach(a => {
+            if (a.getAttribute('href') === '#' + page) {
+                a.classList.add('active');
+            }
+        });
+        
+        // Update title
+        const titleMap = {
+            'home': '📘 Buku Saku SIPENA',
+            'login': '🔐 Panduan Login',
+            'surat-keluar': '📧 Panduan Surat Keluar',
+            'surat-tugas': '📋 Panduan Surat Tugas',
+            'berita-acara': '📄 Panduan Berita Acara',
+            'sk': '📜 Panduan SK',
+            'admin': '🛡️ Panduan Admin Panel',
+            'laporan': '📊 Panduan Laporan',
+            'troubleshoot': '🛠️ Troubleshooting'
+        };
+        document.getElementById('pageTitle').innerHTML = titleMap[page] || 'Buku Saku SIPENA';
+        
+        // Load content
+        const contentMap = {
+            'home': getHomeContent,
+            'login': getLoginContent,
+            'surat-keluar': getSuratKeluarContent,
+            'surat-tugas': getSuratTugasContent,
+            'berita-acara': getBeritaAcaraContent,
+            'sk': getSKContent,
+            'admin': getAdminContent,
+            'laporan': getLaporanContent,
+            'troubleshoot': getTroubleshootContent
+        };
+        
+        if (contentMap[page]) {
+            document.getElementById('contentArea').innerHTML = contentMap[page]();
+        }
+        
+        // Close sidebar on mobile
+        if (isMobile) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('mobileOverlay').classList.remove('active');
+        }
+        
+        // Scroll to top
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    
+    // ============================================
+    // CONTENT GENERATORS
+    // ============================================
+    
+    function getHomeContent() {
+        return `
+            <!-- COVER -->
+            <div class="cover-card">
+                <div class="logo">📜 KANTOR PERTANAHAN KABUPATEN BUTON TENGAH</div>
+                <h1>📘 BUKU SAKU DIGITAL</h1>
+                <h2>SIPENA</h2>
+                <div class="badge">⚡ Panduan Lengkap</div>
+                <div class="tahun">Edisi 2.0 &nbsp;|&nbsp; September 2026</div>
+            </div>
+            
+            <div class="card">
+                <h3>📖 Apa itu SIPENA?</h3>
+                <p><strong>SIPENA</strong> (Sistem Penomoran Naskah Dinas) adalah aplikasi berbasis web yang digunakan di <strong>Kantor Pertanahan Kabupaten Buton Tengah</strong> untuk mengelola penomoran seluruh naskah dinas secara tertib, terintegrasi, dan terdokumentasi.</p>
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i> <strong>Fitur Utama:</strong> Login PIN 6 digit, Surat Keluar, Surat Tugas, Berita Acara, SK, Admin Panel, dan Laporan Cetak.
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Daftar Isi</h3>
+                <table>
+                    <tr><th>Bab</th><th>Judul</th><th>Akses</th></tr>
+                    <tr><td>1</td><td>Pengenalan SIPENA</td><td>🏠 Beranda</td></tr>
+                    <tr><td>2</td><td>Cara Login</td><td>🔐 Login</td></tr>
+                    <tr><td>3</td><td>Membuat Surat Keluar</td><td>📧 Surat Keluar</td></tr>
+                    <tr><td>4</td><td>Membuat Surat Tugas</td><td>📋 Surat Tugas</td></tr>
+                    <tr><td>5</td><td>Membuat Berita Acara</td><td>📄 BA</td></tr>
+                    <tr><td>6</td><td>Membuat SK</td><td>📜 SK</td></tr>
+                    <tr><td>7</td><td>Panel Admin</td><td>🛡️ Admin</td></tr>
+                    <tr><td>8</td><td>Laporan & Cetak</td><td>📊 Laporan</td></tr>
+                    <tr><td>9</td><td>Troubleshooting</td><td>🛠️ Troubleshoot</td></tr>
+                </table>
+            </div>
+            
+            <div class="card" style="border-left-color: #f5b342;">
+                <h3>📞 Kontak Helpdesk</h3>
+                <p>📧 Email: <strong>helpdesk.sipena@kantahbuteng.go.id</strong></p>
+                <p>📱 WhatsApp: <strong>08xx-xxxx-xxxx</strong> (Jam Kerja)</p>
+                <p>🏢 Kantor: <strong>Ruang IT, Kantor Pertanahan Kabupaten Buton Tengah</strong></p>
+            </div>
+        `;
+    }
+    
+    function getLoginContent() {
+        return `
+         <div class="card">
+    <h3>🔐 Panduan Login SIPENA</h3>
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i> Login menggunakan PIN 6 digit yang diberikan oleh admin.
+    </div>
+    
+    <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah Login:</h4>
+    <ol>
+        <li><span class="step-number">1</span> Buka browser (Chrome/Firefox/Edge)</li>
+        <li><span class="step-number">2</span> Akses URL: <strong>https://sipena.kantahbuteng.go.id</strong></li>
+        <li><span class="step-number">3</span> Masukkan 6 digit PIN pada layar login</li>
+    
+            <div class="highlight">
+                <strong>💡 Tampilan Login:</strong><br>
+                <div class="login-image-container" style="text-align: center; margin: 10px 0;">
+                    <img 
+                        src="https://raw.githubusercontent.com/kkpkantahbuteng-sketch/sipena/refs/heads/main/file_gambar/1%20login.png" 
+                        alt="Tampilan Login SIPENA"
+                        loading="lazy"
+                        style="
+                            max-width: 60%;
+                            height: auto;
+                            border-radius: 10px;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+                            border: 1px solid #e2e8f0;
+                            display: block;
+                            margin: 0 auto;
+                        "
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                    >
+                    <div style="display: none; color: #999; font-style: italic; padding: 10px;">
+                        <i class="fas fa-image"></i> Gambar tidak dapat dimuat
+                    </div>
+                </div>
+            </div>
+
+        <li><span class="step-number">4</span> Otomatis verifikasi <strong>PIN</strong></li>
+    </ol>
+    <div class="warning-box">
+        <i class="fas fa-exclamation-triangle"></i> <strong>Aturan PIN:</strong> PIN terdiri dari 6 digit angka.
+    </div>
+</div>
+        `;
+    }
+    
+    function getSuratKeluarContent() {
+        return `
+            <div class="card">
+                <h3>📧 Panduan Surat Keluar</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> <strong>Alur:</strong> Upload File → Isi Data → Simpan → Dapatkan Nomor Surat
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 1: Upload File</h4>
+                <ol>
+                    <li>Klik menu <strong>Surat Keluar</strong></li>
+                    <li>Pada bagian Upload File, klik area upload</li>
+                    <li>Pilih file (PDF, DOC, DOCX, maks. 10MB)</li>
+                    <li>Klik <strong>Upload File</strong></li>
+                </ol>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 2: Isi Data Surat</h4>
+                <table>
+                    <tr><th>Field</th><th>Keterangan</th><th>Wajib</th></tr>
+                    <tr><td>No Urut</td><td>Otomatis dari sistem</td><td>✅</td></tr>
+                    <tr><td>Jenis Surat</td><td>Pilih jenis surat</td><td>✅</td></tr>
+                    <tr><td>Kode Wilayah</td><td>Otomatis (74.14)</td><td>✅</td></tr>
+                    <tr><td>Kode Surat</td><td>Pilih kode surat</td><td>✅</td></tr>
+                    <tr><td>Bulan</td><td>Pilih bulan (Romawi)</td><td>✅</td></tr>
+                    <tr><td>Tahun</td><td>Pilih tahun</td><td>✅</td></tr>
+                    <tr><td>Tanggal Surat</td><td>Pilih tanggal</td><td>✅</td></tr>
+                    <tr><td>Perihal</td><td>Isi perihal surat</td><td>✅</td></tr>
+                    <tr><td>Tujuan</td><td>Isi tujuan surat</td><td>✅</td></tr>
+                </table>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 3: Preview & Simpan</h4>
+                <div class="code-box">SK/001-74.14/X/2026</div>
+                <p style="text-align: center;">Contoh format nomor surat keluar</p>
+                
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i> Klik <strong>Simpan Data Surat</strong> untuk menyimpan.
+                </div>
+            </div>
+        `;
+    }
+    
+    function getSuratTugasContent() {
+        return `
+            <div class="card">
+                <h3>📋 Panduan Surat Tugas</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> <strong>Alur:</strong> Upload File → Isi Data → Pilih Pegawai → Simpan
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 1: Upload File</h4>
+                <ol>
+                    <li>Klik menu <strong>Surat Tugas</strong></li>
+                    <li>Upload file surat tugas (PDF, DOC, DOCX)</li>
+                    <li>Klik <strong>Upload File</strong></li>
+                </ol>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 2: Isi Data</h4>
+                <table>
+                    <tr><th>Field</th><th>Keterangan</th><th>Wajib</th></tr>
+                    <tr><td>No Urut</td><td>Otomatis</td><td>✅</td></tr>
+                    <tr><td>Jenis Surat</td><td>Pilih jenis surat tugas</td><td>✅</td></tr>
+                    <tr><td>Kode Wilayah</td><td>Otomatis</td><td>✅</td></tr>
+                    <tr><td>Kode Surat</td><td>Pilih kode surat</td><td>✅</td></tr>
+                    <tr><td>Bulan</td><td>Pilih bulan</td><td>✅</td></tr>
+                    <tr><td>Tahun</td><td>Pilih tahun</td><td>✅</td></tr>
+                    <tr><td>Tanggal Surat</td><td>Pilih tanggal</td><td>✅</td></tr>
+                    <tr><td>Tanggal Mulai</td><td>Pilih tanggal mulai</td><td>✅</td></tr>
+                    <tr><td>Tanggal Selesai</td><td>Pilih tanggal selesai</td><td>✅</td></tr>
+                    <tr><td>Tempat Tujuan</td><td>Isi tempat tujuan</td><td>✅</td></tr>
+                    <tr><td>Uraian Kegiatan</td><td>Isi uraian kegiatan</td><td>✅</td></tr>
+                </table>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 3: Pilih Pegawai</h4>
+                <div class="highlight">
+                    <strong>📌 Multi-Select Pegawai:</strong><br>
+                    • Klik nama pegawai untuk memilih<br>
+                    • Klik ✕ untuk menghapus pilihan<br>
+                    • Minimal pilih <strong>1 pegawai</strong>
+                </div>
+                
+                <div class="code-box">001/ST-74.14.UP.03.01/X/2026</div>
+                <p style="text-align: center;">Contoh format nomor surat tugas</p>
+            </div>
+        `;
+    }
+    
+    function getBeritaAcaraContent() {
+        return `
+            <div class="card">
+                <h3>📄 Panduan Berita Acara</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> <strong>Alur:</strong> Upload File → Isi Data → Simpan
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 1: Upload File</h4>
+                <ol>
+                    <li>Klik menu <strong>Berita Acara</strong></li>
+                    <li>Upload file berita acara (PDF, DOC, DOCX)</li>
+                    <li>Klik <strong>Upload File</strong></li>
+                </ol>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Langkah 2: Isi Data</h4>
+                <table>
+                    <tr><th>Field</th><th>Keterangan</th><th>Wajib</th></tr>
+                    <tr><td>No Urut</td><td>Otomatis</td><td>✅</td></tr>
+                    <tr><td>Jenis BA</td><td><strong>WAJIB "BA"</strong></td><td>✅</td></tr>
+                    <tr><td>Kode Wilayah</td><td>Otomatis</td><td>✅</td></tr>
+                    <tr><td>Kode BA</td><td>Pilih kode BA</td><td>✅</td></tr>
+                    <tr><td>Bulan</td><td>Pilih bulan</td><td>✅</td></tr>
+                    <tr><td>Tahun</td><td>Pilih tahun</td><td>✅</td></tr>
+                    <tr><td>Tanggal BA</td><td>Pilih tanggal</td><td>✅</td></tr>
+                    <tr><td>Perihal</td><td>Isi perihal</td><td>✅</td></tr>
+                    <tr><td>Penerima</td><td>Isi penerima BA</td><td>✅</td></tr>
+                </table>
+                
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Penting:</strong> Jenis Berita Acara harus <strong>"BA"</strong> (tidak boleh diubah)
+                </div>
+                
+                <div class="code-box">308/BA-74.14.HP.03.04/X/2025</div>
+                <p style="text-align: center;">Contoh format nomor berita acara</p>
+            </div>
+        `;
+    }
+    
+    function getSKContent() {
+        return `
+            <div class="card">
+                <h3>📜 Panduan SK (Surat Keputusan)</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> Mendukung 4 jenis SK: SK, SKB, Pemberian Hak, Pembatalan Hak
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Jenis SK & Format Nomor</h4>
+                <table>
+                    <tr><th>Jenis SK</th><th>Format Nomor</th><th>Contoh</th></tr>
+                    <tr><td>SK Reguler</td><td>[No]/SK-[Kode Wilayah].[Kode SK]/[Bulan]/[Tahun]</td><td>001/SK-74.14.UP.03.01/X/2026</td></tr>
+                    <tr><td>SKB</td><td>[No]/SKB-[Kode Wilayah].[Kode SK]/[Bulan]/[Tahun]</td><td>001/SKB-74.14.UP.03.01/X/2026</td></tr>
+                    <tr><td>Pemberian Hak</td><td>[No]/[Jenis Hak]/BPN.74.14/[Bulan]/[Tahun]</td><td>001/HM/BPN.74.14/X/2026</td></tr>
+                    <tr><td>Pembatalan Hak</td><td>[No]/Pbt/BPN.74.14/[Bulan]/[Tahun]</td><td>001/Pbt/BPN.74.14/X/2026</td></tr>
+                </table>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Jenis Hak (untuk Pemberian Hak)</h4>
+                <table>
+                    <tr><th>Kode</th><th>Keterangan</th></tr>
+                    <tr><td>HM</td><td>Hak Milik</td></tr>
+                    <tr><td>HGB</td><td>Hak Guna Bangunan</td></tr>
+                    <tr><td>HP</td><td>Hak Pakai</td></tr>
+                    <tr><td>HGU</td><td>Hak Guna Usaha</td></tr>
+                </table>
+                
+                <div class="highlight">
+                    <strong>📌 Langkah Pembuatan:</strong><br>
+                    1. Klik menu <strong>SK</strong><br>
+                    2. Upload file SK<br>
+                    3. Pilih <strong>Jenis SK</strong> (akan mengubah form)<br>
+                    4. Isi data sesuai jenis SK<br>
+                    5. Klik <strong>Simpan Data SK</strong>
+                </div>
+            </div>
+        `;
+    }
+    
+    function getAdminContent() {
+        return `
+            <div class="card">
+                <h3>🛡️ Panduan Admin Panel</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> Menu <strong>Admin</strong> hanya muncul untuk user dengan role <strong>ADMIN</strong>.
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">1. Manajemen User</h4>
+                <table>
+                    <tr><th>Fitur</th><th>Fungsi</th></tr>
+                    <tr><td>Tambah User</td><td>Buat user baru dengan Username, PIN, dan Role</td></tr>
+                    <tr><td>Edit User</td><td>Ubah PIN atau Role user</td></tr>
+                    <tr><td>Hapus User</td><td>Hapus user (tidak bisa hapus diri sendiri)</td></tr>
+                </table>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">2. Pengaturan Sistem</h4>
+                <table>
+                    <tr><th>Pengaturan</th><th>Fungsi</th></tr>
+                    <tr><td>Auto Logout</td><td>Waktu idle sebelum logout (5-30 menit)</td></tr>
+                    <tr><td>Max File Size</td><td>Ukuran maksimal upload file (MB)</td></tr>
+                </table>
+                
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Perhatian:</strong> Role <strong>ADMIN</strong> memiliki akses penuh ke semua fitur. Jangan bagikan akun admin!
+                </div>
+            </div>
+        `;
+    }
+    
+    function getLaporanContent() {
+        return `
+            <div class="card">
+                <h3>📊 Panduan Laporan & Cetak</h3>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> Akses laporan melalui <strong>Admin → Tab Laporan</strong>
+                </div>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Jenis Laporan</h4>
+                <table>
+                    <tr><th>Jenis</th><th>Keterangan</th></tr>
+                    <tr><td>📧 Surat Keluar</td><td>Semua data surat keluar</td></tr>
+                    <tr><td>📋 Surat Tugas</td><td>Semua data surat tugas</td></tr>
+                    <tr><td>📄 Berita Acara</td><td>Semua data berita acara</td></tr>
+                    <tr><td>📜 SK</td><td>Semua data SK</td></tr>
+                </table>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Fitur Laporan</h4>
+                <table>
+                    <tr><th>Fitur</th><th>Fungsi</th></tr>
+                    <tr><td>🔍 Pencarian Global</td><td>Cari di semua kolom</td></tr>
+                    <tr><td>🎯 Filter per Kolom</td><td>Filter spesifik per kolom</td></tr>
+                    <tr><td>✅ Data Lengkap</td><td>Tampilkan data yang semua kolom terisi</td></tr>
+                    <tr><td>⚠️ Data Tidak Lengkap</td><td>Tampilkan data dengan kolom kosong</td></tr>
+                    <tr><td>🖨️ Cetak Semua</td><td>Cetak semua data yang terfilter</td></tr>
+                    <tr><td>🖨️ Cetak Per Baris</td><td>Cetak satu data spesifik</td></tr>
+                </table>
+                
+                <div class="success-box">
+                    <i class="fas fa-check-circle"></i> <strong>Cara Cetak:</strong> Gunakan filter → Klik <strong>Cetak Semua</strong> atau tombol <strong>Cetak</strong> pada setiap baris.
+                </div>
+            </div>
+        `;
+    }
+    
+    function getTroubleshootContent() {
+        return `
+            <div class="card">
+                <h3>🛠️ Troubleshooting</h3>
+                
+                <h4 style="margin: 15px 0 10px 0; color: var(--dark);">Masalah & Solusi</h4>
+                <table>
+                    <tr><th>Masalah</th><th>Solusi</th></tr>
+                    <tr><td>❌ Gagal Login</td><td>Cek PIN 6 digit. Hubungi admin jika lupa PIN.</td></tr>
+                    <tr><td>❌ File Gagal Upload</td><td>Pastikan format PDF/DOC/DOCX, ukuran <10MB.</td></tr>
+                    <tr><td>❌ Nomor Surat Tidak Keluar</td><td>Pastikan semua field wajib terisi.</td></tr>
+                    <tr><td>❌ Pegawai Tidak Muncul</td><td>Pastikan sheet DATA PEGAWAI terisi.</td></tr>
+                    <tr><td>❌ Tidak Bisa Pilih Pegawai</td><td>Minimal pilih 1 pegawai. Klik nama untuk memilih.</td></tr>
+                    <tr><td>❌ Cetak Laporan Kosong</td><td>Gunakan filter yang benar. Pastikan ada data.</td></tr>
+                    <tr><td>❌ Session Expired</td><td>Login ulang. Tingkatkan waktu auto logout di Admin.</td></tr>
+                    <tr><td>❌ Menu Admin Tidak Muncul</td><td>Anda bukan ADMIN. Hubungi admin untuk upgrade role.</td></tr>
+                </table>
+                
+                <h4 style="margin: 20px 0 10px 0; color: var(--dark);">Error Surat Tugas</h4>
+                <table>
+                    <tr><th>Error</th><th>Penyebab</th><th>Solusi</th></tr>
+                    <tr><td>"Pilih minimal 1 pegawai"</td><td>Belum pilih pegawai</td><td>Pilih pegawai di multi-select</td></tr>
+                    <tr><td>Tanggal error</td><td>Tanggal mundur</td><td>Gunakan tanggal hari ini atau ke depan</td></tr>
+                </table>
+                
+                <h4 style="margin: 20px 0 10px 0; color: var(--dark);">Error Berita Acara</h4>
+                <table>
+                    <tr><th>Error</th><th>Penyebab</th><th>Solusi</th></tr>
+                    <tr><td>"Jenis BA harus BA"</td><td>Memilih jenis lain</td><td>Pilih "BA" di dropdown</td></tr>
+                    <tr><td>Tanggal error</td><td>Tanggal mundur</td><td>Gunakan tanggal hari ini atau ke depan</td></tr>
+                </table>
+                
+                <h4 style="margin: 20px 0 10px 0; color: var(--dark);">Error SK</h4>
+                <table>
+                    <tr><th>Error</th><th>Penyebab</th><th>Solusi</th></tr>
+                    <tr><td>Format masa berlaku error</td><td>Format salah</td><td>Gunakan: 2025 atau 2025-2026</td></tr>
+                    <tr><td>Tanggal error</td><td>Tanggal mundur</td><td>Gunakan tanggal hari ini atau ke depan</td></tr>
+                </table>
+                
+                <div class="highlight" style="margin-top: 20px;">
+                    <strong>📞 Butuh bantuan?</strong><br>
+                    📧 helpdesk.sipena@kantahbuteng.go.id<br>
+                    📱 08xx-xxxx-xxxx (Jam Kerja)
+                </div>
+            </div>
+        `;
+    }
+    
+    // ============================================
+    // INIT - Show Home by Default
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        showPage('home');
+        checkMobile();
+    });
+</script>
+
+</body>
+</html>
